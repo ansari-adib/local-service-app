@@ -1,0 +1,80 @@
+ 
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard — ServiceBook{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar">
+            <nav class="nav flex-column">
+                <a class="nav-link active" href="{% url 'admin_dashboard' %}">
+                    <i class="bi bi-grid"></i> Dashboard
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="bi bi-people"></i> Customers
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="bi bi-briefcase"></i> Providers
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="bi bi-tools"></i> Services
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="bi bi-calendar-check"></i> Bookings
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="bi bi-exclamation-circle"></i> Complaints
+                </a>
+                <a class="nav-link" href="/admin/">
+                    <i class="bi bi-gear"></i> Django Admin
+                </a>
+                <hr>
+                <a class="nav-link text-danger" href="{% url 'logout' %}">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-10 main-content">
+            <h4 class="fw-bold mb-1">Admin Dashboard</h4>
+            <p class="text-muted mb-4">Platform overview and management.</p>
+
+            <!-- Stat Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #0d6efd, #0056b3);">
+                        <i class="bi bi-people" style="font-size:2rem;"></i>
+                        <h3>{{ total_customers }}</h3>
+                        <p class="mb-0">Total Customers</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #198754, #146c43);">
+                        <i class="bi bi-briefcase" style="font-size:2rem;"></i>
+                        <h3>{{ total_providers }}</h3>
+                        <p class="mb-0">Total Providers</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #ffc107, #d39e00);">
+                        <i class="bi bi-calendar-check" style="font-size:2rem;"></i>
+                        <h3>0</h3>
+                        <p class="mb-0">Total Bookings</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #dc3545, #b02a37);">
+                        <i class="bi bi-exclamation-circle" style="font-size:2rem;"></i>
+                        <h3>0</h3>
+                        <p class="mb-0">Open Complaints</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

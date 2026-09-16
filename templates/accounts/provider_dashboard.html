@@ -1,0 +1,114 @@
+ 
+{% extends 'base.html' %}
+{% block title %}Provider Dashboard — ServiceBook{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar">
+            <nav class="nav flex-column">
+                <a class="nav-link active" href="{% url 'provider_dashboard' %}">
+                    <i class="bi bi-grid"></i> Dashboard
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="bi bi-tools"></i> My Services
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="bi bi-calendar-check"></i> Booking Requests
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="bi bi-check-circle"></i> Active Bookings
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="bi bi-star"></i> Reviews
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="bi bi-bell"></i> Notifications
+                </a>
+                <a class="nav-link" href="{% url 'update_profile' %}">
+                    <i class="bi bi-person"></i> Profile
+                </a>
+                <hr>
+                <a class="nav-link text-danger" href="{% url 'logout' %}">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-10 main-content">
+            <h4 class="fw-bold mb-1">
+                Welcome, {{ user.first_name|default:user.username }}!
+            </h4>
+            <p class="text-muted mb-4">
+                Provider Dashboard
+                {% if profile.is_verified %}
+                    <span class="badge bg-success">Verified</span>
+                {% else %}
+                    <span class="badge bg-warning text-dark">Pending Verification</span>
+                {% endif %}
+            </p>
+
+            <!-- Stat Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #0d6efd, #0056b3);">
+                        <i class="bi bi-calendar" style="font-size:2rem;"></i>
+                        <h3>0</h3>
+                        <p class="mb-0">Total Bookings</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #ffc107, #d39e00);">
+                        <i class="bi bi-clock" style="font-size:2rem;"></i>
+                        <h3>0</h3>
+                        <p class="mb-0">Pending Requests</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #198754, #146c43);">
+                        <i class="bi bi-check-circle" style="font-size:2rem;"></i>
+                        <h3>0</h3>
+                        <p class="mb-0">Completed</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #6f42c1, #59359a);">
+                        <i class="bi bi-star" style="font-size:2rem;"></i>
+                        <h3>{{ profile.average_rating }}</h3>
+                        <p class="mb-0">Average Rating</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card p-4">
+                <h5 class="fw-bold mb-3">Quick Actions</h5>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <a href="#" class="btn btn-success w-100 py-3">
+                            <i class="bi bi-plus-circle d-block mb-1" style="font-size:1.5rem;"></i>
+                            Add New Service
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="#" class="btn btn-outline-primary w-100 py-3">
+                            <i class="bi bi-calendar-check d-block mb-1" style="font-size:1.5rem;"></i>
+                            View Booking Requests
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{% url 'update_profile' %}" class="btn btn-outline-secondary w-100 py-3">
+                            <i class="bi bi-person d-block mb-1" style="font-size:1.5rem;"></i>
+                            Update Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

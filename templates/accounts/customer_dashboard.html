@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block title %}Customer Dashboard — ServiceBook{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar">
+            <nav class="nav flex-column">
+                <a class="nav-link active" href="{% url 'customer_dashboard' %}">
+                    <i class="bi bi-grid"></i> Dashboard
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="bi bi-search"></i> Find Services
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="bi bi-calendar-check"></i> My Bookings
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="bi bi-star"></i> My Reviews
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="bi bi-exclamation-circle"></i> Complaints
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="bi bi-bell"></i> Notifications
+                </a>
+                <a class="nav-link" href="{% url 'update_profile' %}">
+                    <i class="bi bi-person"></i> Profile
+                </a>
+                <hr>
+                <a class="nav-link text-danger" href="{% url 'logout' %}">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-10 main-content">
+            <h4 class="fw-bold mb-1">
+                Welcome, {{ user.first_name|default:user.username }}!
+            </h4>
+            <p class="text-muted mb-4">Here is your dashboard overview.</p>
+
+            <!-- Stat Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #0d6efd, #0056b3);">
+                        <i class="bi bi-calendar-check" style="font-size:2rem;"></i>
+                        <h3>0</h3>
+                        <p class="mb-0">Total Bookings</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #198754, #146c43);">
+                        <i class="bi bi-check-circle" style="font-size:2rem;"></i>
+                        <h3>0</h3>
+                        <p class="mb-0">Completed</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #ffc107, #d39e00);">
+                        <i class="bi bi-clock" style="font-size:2rem;"></i>
+                        <h3>0</h3>
+                        <p class="mb-0">Pending</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #dc3545, #b02a37);">
+                        <i class="bi bi-x-circle" style="font-size:2rem;"></i>
+                        <h3>0</h3>
+                        <p class="mb-0">Cancelled</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card p-4">
+                <h5 class="fw-bold mb-3">Quick Actions</h5>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <a href="#" class="btn btn-primary w-100 py-3">
+                            <i class="bi bi-search d-block mb-1" style="font-size:1.5rem;"></i>
+                            Find a Service
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="#" class="btn btn-outline-primary w-100 py-3">
+                            <i class="bi bi-calendar-check d-block mb-1" style="font-size:1.5rem;"></i>
+                            View My Bookings
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{% url 'update_profile' %}" class="btn btn-outline-secondary w-100 py-3">
+                            <i class="bi bi-person d-block mb-1" style="font-size:1.5rem;"></i>
+                            Update Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
