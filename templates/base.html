@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,32 +18,38 @@
             background-color: #f8f9fa;
             font-family: 'Segoe UI', sans-serif;
         }
+
         .navbar-brand {
             font-weight: 700;
             font-size: 1.4rem;
             color: #0d6efd !important;
         }
+
         .navbar {
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
             background: white !important;
         }
+
         .btn-primary {
             background-color: #0d6efd;
             border: none;
             padding: 10px 25px;
             border-radius: 8px;
         }
+
         .card {
             border: none;
             border-radius: 12px;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.07);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.07);
         }
+
         .sidebar {
             min-height: calc(100vh - 56px);
             background: white;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
             padding: 20px 0;
         }
+
         .sidebar .nav-link {
             color: #555;
             padding: 10px 20px;
@@ -50,31 +57,38 @@
             margin: 2px 10px;
             font-size: 0.95rem;
         }
+
         .sidebar .nav-link:hover,
         .sidebar .nav-link.active {
             background-color: #e8f0fe;
             color: #0d6efd;
         }
+
         .sidebar .nav-link i {
             margin-right: 8px;
         }
+
         .main-content {
             padding: 30px;
         }
+
         .stat-card {
             border-radius: 12px;
             padding: 20px;
             color: white;
             margin-bottom: 20px;
         }
+
         .stat-card h3 {
             font-size: 2rem;
             font-weight: 700;
         }
+
         .alert {
             border-radius: 10px;
             border: none;
         }
+
         footer {
             background: white;
             padding: 20px;
@@ -88,25 +102,29 @@
 
     {% block extra_css %}{% endblock %}
 </head>
+
 <body>
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light sticky-top">
-    <div class="container">
-        <a class="navbar-brand" href="{% url 'home' %}">
-            <i class="bi bi-tools"></i> ServiceBook
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'home' %}">Home</a>
-                </li>
-            </ul>
-            <ul class="navbar-nav">
-                {% if user.is_authenticated %}
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="bi bi-tools"></i> ServiceBook
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'service_list' %}">Services</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'dashboard' %}">
                             <i class="bi bi-grid"></i> Dashboard
@@ -123,7 +141,9 @@
                                     {{ user.get_role_display }}
                                 </span>
                             </li>
-                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
                             <li>
                                 <a class="dropdown-item" href="{% url 'update_profile' %}">
                                     <i class="bi bi-pencil"></i> Edit Profile
@@ -136,7 +156,7 @@
                             </li>
                         </ul>
                     </li>
-                {% else %}
+                    {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'login' %}">Login</a>
                     </li>
@@ -145,37 +165,38 @@
                             Register
                         </a>
                     </li>
-                {% endif %}
-            </ul>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
-<!-- Messages -->
-{% if messages %}
-<div class="container mt-3">
-    {% for message in messages %}
+    <!-- Messages -->
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
         <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
             {{ message }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
-    {% endfor %}
-</div>
-{% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
 
-<!-- Main Content -->
-{% block content %}
-{% endblock %}
+    <!-- Main Content -->
+    {% block content %}
+    {% endblock %}
 
-<!-- Footer -->
-<footer>
-    <p>&copy; 2024 ServiceBook — Local Service Booking Platform</p>
-</footer>
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 ServiceBook — Local Service Booking Platform</p>
+    </footer>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-{% block extra_js %}{% endblock %}
+    {% block extra_js %}{% endblock %}
 
 </body>
+
 </html>

@@ -1,0 +1,121 @@
+ 
+{% extends 'base.html' %}
+{% block title %}My Services — ServiceBook{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar">
+            <nav class="nav flex-column">
+                <a class="nav-link" href="{% url 'provider_dashboard' %}">
+                    <i class="bi bi-grid"></i> Dashboard
+                </a>
+                <a class="nav-link active" href="{% url 'my_services' %}">
+                    <i class="bi bi-tools"></i> My Services
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="bi bi-calendar-check"></i> Bookings
+                </a>
+                <a class="nav-link" href="{% url 'update_profile' %}">
+                    <i class="bi bi-person"></i> Profile
+                </a>
+                <hr>
+                <a class="nav-link text-danger" href="{% url 'logout' %}">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-10 main-content">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="fw-bold mb-0">My Services</h4>
+                    <p class="text-muted">Manage your service listings</p>
+                </div>
+                <a href="{% url 'add_service' %}" class="btn btn-success">
+                    <i class="bi bi-plus-circle"></i> Add New Service
+                </a>
+            </div>
+
+            {% if services %}
+                <div class="card">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Service Name</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Duration</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for service in services %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>
+                                            <strong>{{ service.name }}</strong>
+                                            <br>
+                                            <small class="text-muted">
+                                                {{ service.description|truncatewords:8 }}
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-primary">
+                                                {{ service.category.name }}
+                                            </span>
+                                        </td>
+                                        <td class="fw-bold text-primary">
+                                            ₹{{ service.price }}
+                                        </td>
+                                        <td>{{ service.duration_hours }} hr(s)</td>
+                                        <td>
+                                            {% if service.is_available %}
+                                                <span class="badge bg-success">Active</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">Inactive</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'service_detail' service.pk %}"
+                                               class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="{% url 'edit_service' service.pk %}"
+                                               class="btn btn-outline-warning btn-sm">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a href="{% url 'delete_service' service.pk %}"
+                                               class="btn btn-outline-danger btn-sm">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-tools text-muted" style="font-size:4rem;"></i>
+                    <h4 class="mt-3 text-muted">No services yet</h4>
+                    <p class="text-muted">Add your first service to start getting bookings.</p>
+                    <a href="{% url 'add_service' %}" class="btn btn-success">
+                        <i class="bi bi-plus-circle"></i> Add Service
+                    </a>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+{% endblock %}

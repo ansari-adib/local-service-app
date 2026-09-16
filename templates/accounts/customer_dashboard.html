@@ -10,29 +10,28 @@
             <nav class="nav flex-column">
                 <a class="nav-link active" href="{% url 'customer_dashboard' %}">
                     <i class="bi bi-grid"></i> Dashboard
-                </a>
-                <a class="nav-link" href="#">
-                    <i class="bi bi-search"></i> Find Services
-                </a>
-                <a class="nav-link" href="#">
-                    <i class="bi bi-calendar-check"></i> My Bookings
-                </a>
-                <a class="nav-link" href="#">
-                    <i class="bi bi-star"></i> My Reviews
-                </a>
-                <a class="nav-link" href="#">
-                    <i class="bi bi-exclamation-circle"></i> Complaints
-                </a>
-                <a class="nav-link" href="#">
-                    <i class="bi bi-bell"></i> Notifications
-                </a>
-                <a class="nav-link" href="{% url 'update_profile' %}">
-                    <i class="bi bi-person"></i> Profile
-                </a>
-                <hr>
-                <a class="nav-link text-danger" href="{% url 'logout' %}">
-                    <i class="bi bi-box-arrow-right"></i> Logout
-                </a>
+                    <a class="nav-link" href="{% url 'service_list' %}">
+                        <i class="bi bi-search"></i> Find Services
+                    </a>
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-calendar-check"></i> My Bookings
+                    </a>
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-star"></i> My Reviews
+                    </a>
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-exclamation-circle"></i> Complaints
+                    </a>
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-bell"></i> Notifications
+                    </a>
+                    <a class="nav-link" href="{% url 'update_profile' %}">
+                        <i class="bi bi-person"></i> Profile
+                    </a>
+                    <hr>
+                    <a class="nav-link text-danger" href="{% url 'logout' %}">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </a>
             </nav>
         </div>
 

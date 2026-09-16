@@ -1,0 +1,125 @@
+ 
+{% extends 'base.html' %}
+{% block title %}{{ service.name }} — ServiceBook{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+
+        <!-- Service Info -->
+        <div class="col-md-8">
+            <div class="card p-4 mb-4">
+
+                <span class="badge bg-primary mb-2" style="width:fit-content;">
+                    {{ service.category.name }}
+                </span>
+
+                <h3 class="fw-bold">{{ service.name }}</h3>
+
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-star-fill text-warning me-1"></i>
+                    <strong>{{ provider.average_rating }}</strong>
+                    <span class="text-muted ms-1">
+                        ({{ provider.total_reviews }} reviews)
+                    </span>
+                </div>
+
+                <h4 class="text-primary fw-bold mb-3">₹{{ service.price }}</h4>
+
+                <p class="text-muted mb-1">
+                    <i class="bi bi-clock"></i>
+                    Estimated Duration: {{ service.duration_hours }} hour(s)
+                </p>
+
+                <hr>
+
+                <h5 class="fw-bold">About This Service</h5>
+                <p>{{ service.description }}</p>
+
+                {% if user.is_authenticated and user.is_customer %}
+                    <a href="{% url 'create_booking' service.pk %}"
+                       class="btn btn-primary btn-lg mt-3">
+                        <i class="bi bi-calendar-plus"></i> Book This Service
+                    </a>
+                {% elif not user.is_authenticated %}
+                    <a href="{% url 'login' %}" class="btn btn-primary btn-lg mt-3">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        Login to Book
+                    </a>
+                {% endif %}
+
+            </div>
+        </div>
+
+        <!-- Provider Info -->
+        <div class="col-md-4">
+            <div class="card p-4 mb-4">
+                <h5 class="fw-bold mb-3">
+                    <i class="bi bi-person-circle text-primary"></i>
+                    Service Provider
+                </h5>
+
+                {% if provider.profile_photo %}
+                    <img src="{{ provider.profile_photo.url }}"
+                         class="rounded-circle mb-3"
+                         width="80" height="80"
+                         style="object-fit:cover;">
+                {% else %}
+                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mb-3"
+                         style="width:80px; height:80px; font-size:2rem;">
+                        {{ provider.user.first_name|first|upper }}
+                    </div>
+                {% endif %}
+
+                <h6 class="fw-bold">
+                    {{ provider.user.get_full_name|default:provider.user.username }}
+                    {% if provider.is_verified %}
+                        <span class="badge bg-success ms-1">Verified</span>
+                    {% endif %}
+                </h6>
+
+                <p class="text-muted small mb-1">
+                    <i class="bi bi-geo-alt"></i> {{ provider.city|default:'Location not set' }}
+                </p>
+                <p class="text-muted small mb-1">
+                    <i class="bi bi-briefcase"></i>
+                    {{ provider.experience_years }} year(s) experience
+                </p>
+                <p class="text-muted small mb-3">
+                    <i class="bi bi-star-fill text-warning"></i>
+                    {{ provider.average_rating }} rating
+                </p>
+
+                {% if provider.bio %}
+                    <p class="small">{{ provider.bio }}</p>
+                {% endif %}
+
+                <a href="{% url 'provider_public_profile' provider.pk %}"
+                   class="btn btn-outline-primary btn-sm w-100">
+                    View Full Profile
+                </a>
+            </div>
+
+            <!-- Other Services -->
+            {% if other_services %}
+                <div class="card p-4">
+                    <h6 class="fw-bold mb-3">Other Services by This Provider</h6>
+                    {% for s in other_services %}
+                        <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                            <div>
+                                <p class="mb-0 small fw-semibold">{{ s.name }}</p>
+                                <p class="mb-0 text-muted small">₹{{ s.price }}</p>
+                            </div>
+                            <a href="{% url 'service_detail' s.pk %}"
+                               class="btn btn-outline-primary btn-sm">
+                                View
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}
