@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% block title %}Book Service — ServiceBook{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+
+        <!-- Booking Form -->
+        <div class="col-md-8">
+            <div class="card p-4">
+
+                <h4 class="fw-bold mb-4">
+                    <i class="bi bi-calendar-plus text-primary"></i>
+                    Book This Service
+                </h4>
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            Preferred Date
+                        </label>
+                        {{ form.booking_date }}
+                        {% if form.booking_date.errors %}
+                            <div class="text-danger small">
+                                {{ form.booking_date.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            Time Slot
+                        </label>
+                        {{ form.time_slot }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            Service Address
+                        </label>
+                        {{ form.address }}
+                        {% if form.address.errors %}
+                            <div class="text-danger small">
+                                {{ form.address.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">City</label>
+                        {{ form.city }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            Special Instructions (Optional)
+                        </label>
+                        {{ form.notes }}
+                    </div>
+
+                    <!-- Price Summary -->
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Service Price: ₹{{ service.price }}</strong>
+                        <br>
+                        <small>
+                            Estimated duration: {{ service.duration_hours }} hour(s)
+                        </small>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-calendar-check"></i>
+                            Confirm Booking
+                        </button>
+                        <a href="{% url 'service_detail' service.pk %}"
+                           class="btn btn-outline-secondary">
+                            Cancel
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+        <!-- Service Summary -->
+        <div class="col-md-4">
+            <div class="card p-4">
+                <h5 class="fw-bold mb-3">Booking Summary</h5>
+
+                <p class="mb-1">
+                    <strong>Service:</strong> {{ service.name }}
+                </p>
+                <p class="mb-1">
+                    <strong>Category:</strong> {{ service.category.name }}
+                </p>
+                <p class="mb-1">
+                    <strong>Provider:</strong>
+                    {{ provider.user.get_full_name|default:provider.user.username }}
+                </p>
+                <p class="mb-1">
+                    <strong>City:</strong>
+                    {{ provider.city|default:'Not specified' }}
+                </p>
+                <p class="mb-1">
+                    <strong>Rating:</strong>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    {{ provider.average_rating }}
+                </p>
+                <hr>
+                <p class="fw-bold text-primary fs-5 mb-0">
+                    Total: ₹{{ service.price }}
+                </p>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

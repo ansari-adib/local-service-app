@@ -1,0 +1,76 @@
+ 
+{% if booking_list %}
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Service</th>
+                        <th>
+                            {% if role == 'customer' %}Provider{% else %}Customer{% endif %}
+                        </th>
+                        <th>Date</th>
+                        <th>Slot</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in booking_list %}
+                        <tr>
+                            <td>{{ booking.id }}</td>
+                            <td>
+                                <strong>{{ booking.service.name }}</strong>
+                                <br>
+                                <small class="text-muted">
+                                    {{ booking.service.category.name }}
+                                </small>
+                            </td>
+                            <td>
+                                {% if role == 'customer' %}
+                                    {{ booking.service.provider.user.get_full_name|default:booking.service.provider.user.username }}
+                                {% else %}
+                                    {{ booking.customer.get_full_name|default:booking.customer.username }}
+                                {% endif %}
+                            </td>
+                            <td>{{ booking.booking_date }}</td>
+                            <td>{{ booking.get_time_slot_display }}</td>
+                            <td class="fw-bold text-primary">
+                                ₹{{ booking.total_price }}
+                            </td>
+                            <td>
+                                {% if booking.status == 'pending' %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                {% elif booking.status == 'accepted' %}
+                                    <span class="badge bg-success">Accepted</span>
+                                {% elif booking.status == 'rejected' %}
+                                    <span class="badge bg-danger">Rejected</span>
+                                {% elif booking.status == 'in_progress' %}
+                                    <span class="badge bg-info">In Progress</span>
+                                {% elif booking.status == 'completed' %}
+                                    <span class="badge bg-primary">Completed</span>
+                                {% elif booking.status == 'cancelled' %}
+                                    <span class="badge bg-secondary">Cancelled</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'booking_detail' booking.pk %}"
+                                   class="btn btn-outline-primary btn-sm">
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-calendar-x text-muted" style="font-size:3rem;"></i>
+        <p class="text-muted mt-3">No bookings found.</p>
+    </div>
+{% endif %}

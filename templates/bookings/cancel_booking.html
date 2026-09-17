@@ -1,0 +1,37 @@
+ 
+{% extends 'base.html' %}
+{% block title %}Cancel Booking — ServiceBook{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card p-4 text-center">
+                <i class="bi bi-exclamation-triangle text-warning"
+                   style="font-size:4rem;"></i>
+                <h4 class="fw-bold mt-3">Cancel This Booking?</h4>
+                <p class="text-muted">
+                    Booking #{{ booking.id }} —
+                    <strong>{{ booking.service.name }}</strong>
+                    on {{ booking.booking_date }}
+                </p>
+                <p class="text-danger small">
+                    This action cannot be undone.
+                </p>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="d-flex gap-2 justify-content-center">
+                        <button type="submit" class="btn btn-danger">
+                            Yes, Cancel Booking
+                        </button>
+                        <a href="{% url 'booking_detail' booking.pk %}"
+                           class="btn btn-outline-secondary">
+                            Go Back
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

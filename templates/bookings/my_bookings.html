@@ -1,0 +1,109 @@
+ 
+{% extends 'base.html' %}
+{% block title %}My Bookings — ServiceBook{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar">
+            <nav class="nav flex-column">
+                <a class="nav-link" href="{% url 'customer_dashboard' %}">
+                    <i class="bi bi-grid"></i> Dashboard
+                </a>
+                <a class="nav-link" href="{% url 'service_list' %}">
+                    <i class="bi bi-search"></i> Find Services
+                </a>
+                <a class="nav-link active" href="{% url 'my_bookings' %}">
+                    <i class="bi bi-calendar-check"></i> My Bookings
+                </a>
+                <a class="nav-link" href="{% url 'update_profile' %}">
+                    <i class="bi bi-person"></i> Profile
+                </a>
+                <hr>
+                <a class="nav-link text-danger" href="{% url 'logout' %}">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-10 main-content">
+
+            <h4 class="fw-bold mb-4">My Bookings</h4>
+
+            <!-- Tabs -->
+            <ul class="nav nav-tabs mb-4">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab"
+                       href="#all">
+                        All
+                        <span class="badge bg-secondary ms-1">
+                            {{ bookings.count }}
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#pending">
+                        Pending
+                        <span class="badge bg-warning text-dark ms-1">
+                            {{ pending.count }}
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#accepted">
+                        Accepted
+                        <span class="badge bg-success ms-1">
+                            {{ accepted.count }}
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#completed">
+                        Completed
+                        <span class="badge bg-primary ms-1">
+                            {{ completed.count }}
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#cancelled">
+                        Cancelled/Rejected
+                        <span class="badge bg-danger ms-1">
+                            {{ cancelled.count }}
+                        </span>
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+
+                <!-- All Bookings -->
+                <div class="tab-pane fade show active" id="all">
+                    {% include 'bookings/partials/booking_table.html' with booking_list=bookings role='customer' %}
+                </div>
+
+                <div class="tab-pane fade" id="pending">
+                    {% include 'bookings/partials/booking_table.html' with booking_list=pending role='customer' %}
+                </div>
+
+                <div class="tab-pane fade" id="accepted">
+                    {% include 'bookings/partials/booking_table.html' with booking_list=accepted role='customer' %}
+                </div>
+
+                <div class="tab-pane fade" id="completed">
+                    {% include 'bookings/partials/booking_table.html' with booking_list=completed role='customer' %}
+                </div>
+
+                <div class="tab-pane fade" id="cancelled">
+                    {% include 'bookings/partials/booking_table.html' with booking_list=cancelled role='customer' %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
