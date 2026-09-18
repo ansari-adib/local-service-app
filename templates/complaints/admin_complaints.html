@@ -1,0 +1,138 @@
+ 
+{% extends 'base.html' %}
+{% block title %}Manage Complaints — ServiceBook{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar">
+            <nav class="nav flex-column">
+                <a class="nav-link" href="{% url 'admin_dashboard' %}">
+                    <i class="bi bi-grid"></i> Dashboard
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="bi bi-people"></i> Users
+                </a>
+                <a class="nav-link active" href="{% url 'admin_complaints' %}">
+                    <i class="bi bi-exclamation-circle"></i> Complaints
+                </a>
+                <a class="nav-link" href="/admin/">
+                    <i class="bi bi-gear"></i> Django Admin
+                </a>
+                <hr>
+                <a class="nav-link text-danger" href="{% url 'logout' %}">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-10 main-content">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="fw-bold mb-0">Manage Complaints</h4>
+                    <p class="text-muted mb-0">
+                        {{ open_count }} open complaint(s) need attention
+                    </p>
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="mb-4">
+                <a href="{% url 'admin_complaints' %}"
+                   class="btn btn-sm {% if not status_filter %}btn-primary{% else %}btn-outline-primary{% endif %} me-2">
+                    All
+                </a>
+                <a href="?status=open"
+                   class="btn btn-sm {% if status_filter == 'open' %}btn-danger{% else %}btn-outline-danger{% endif %} me-2">
+                    Open
+                </a>
+                <a href="?status=under_review"
+                   class="btn btn-sm {% if status_filter == 'under_review' %}btn-warning{% else %}btn-outline-warning{% endif %} me-2">
+                    Under Review
+                </a>
+                <a href="?status=resolved"
+                   class="btn btn-sm {% if status_filter == 'resolved' %}btn-success{% else %}btn-outline-success{% endif %} me-2">
+                    Resolved
+                </a>
+                <a href="?status=closed"
+                   class="btn btn-sm {% if status_filter == 'closed' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+                    Closed
+                </a>
+            </div>
+
+            {% if complaints %}
+                <div class="card">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Submitted By</th>
+                                    <th>Subject</th>
+                                    <th>Booking</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for complaint in complaints %}
+                                    <tr>
+                                        <td>{{ complaint.id }}</td>
+                                        <td>
+                                            {{ complaint.submitted_by.get_full_name|default:complaint.submitted_by.username }}
+                                            <br>
+                                            <small class="text-muted">
+                                                {{ complaint.submitted_by.get_role_display }}
+                                            </small>
+                                        </td>
+                                        <td>{{ complaint.subject }}</td>
+                                        <td>
+                                            {% if complaint.booking %}
+                                                #{{ complaint.booking.id }}
+                                            {% else %}
+                                                —
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if complaint.status == 'open' %}
+                                                <span class="badge bg-danger">Open</span>
+                                            {% elif complaint.status == 'under_review' %}
+                                                <span class="badge bg-warning text-dark">Under Review</span>
+                                            {% elif complaint.status == 'resolved' %}
+                                                <span class="badge bg-success">Resolved</span>
+                                            {% elif complaint.status == 'closed' %}
+                                                <span class="badge bg-secondary">Closed</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ complaint.created_at|date:"d M Y" }}
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'admin_complaint_response' complaint.pk %}"
+                                               class="btn btn-outline-primary btn-sm">
+                                                Respond
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-check-circle text-success"
+                       style="font-size:4rem;"></i>
+                    <h4 class="mt-3 text-muted">No complaints found</h4>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+{% endblock %}

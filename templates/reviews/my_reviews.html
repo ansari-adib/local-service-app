@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block title %}My Reviews — ServiceBook{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar">
+            <nav class="nav flex-column">
+                <a class="nav-link" href="{% url 'customer_dashboard' %}">
+                    <i class="bi bi-grid"></i> Dashboard
+                </a>
+                <a class="nav-link" href="{% url 'service_list' %}">
+                    <i class="bi bi-search"></i> Find Services
+                </a>
+                <a class="nav-link" href="{% url 'my_bookings' %}">
+                    <i class="bi bi-calendar-check"></i> My Bookings
+                </a>
+                <a class="nav-link active" href="{% url 'my_reviews' %}">
+                    <i class="bi bi-star"></i> My Reviews
+                </a>
+                <a class="nav-link" href="{% url 'my_complaints' %}">
+                    <i class="bi bi-exclamation-circle"></i> Complaints
+                </a>
+                <a class="nav-link" href="{% url 'update_profile' %}">
+                    <i class="bi bi-person"></i> Profile
+                </a>
+                <hr>
+                <a class="nav-link text-danger" href="{% url 'logout' %}">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-10 main-content">
+            <h4 class="fw-bold mb-4">
+                <i class="bi bi-star-fill text-warning"></i>
+                My Reviews
+            </h4>
+
+            {% if reviews %}
+                <div class="row g-4">
+                    {% for review in reviews %}
+                        <div class="col-md-6">
+                            <div class="card p-4 h-100">
+
+                                <!-- Stars -->
+                                <div class="d-flex mb-2">
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= review.rating %}
+                                            <i class="bi bi-star-fill text-warning me-1"></i>
+                                        {% else %}
+                                            <i class="bi bi-star text-muted me-1"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <span class="ms-2 fw-bold">
+                                        {{ review.rating }}/5
+                                    </span>
+                                </div>
+
+                                <!-- Service -->
+                                <h6 class="fw-bold">
+                                    {{ review.booking.service.name }}
+                                </h6>
+                                <p class="text-muted small mb-1">
+                                    <i class="bi bi-person-circle"></i>
+                                    {{ review.booking.service.provider.user.get_full_name|default:review.booking.service.provider.user.username }}
+                                </p>
+                                <p class="text-muted small mb-2">
+                                    <i class="bi bi-calendar"></i>
+                                    {{ review.booking.booking_date }}
+                                </p>
+
+                                <!-- Comment -->
+                                {% if review.comment %}
+                                    <p class="text-muted fst-italic">
+                                        "{{ review.comment }}"
+                                    </p>
+                                {% else %}
+                                    <p class="text-muted small">
+                                        No comment added.
+                                    </p>
+                                {% endif %}
+
+                                <small class="text-muted mt-auto">
+                                    Reviewed on
+                                    {{ review.created_at|date:"d M Y" }}
+                                </small>
+
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-star text-muted"
+                       style="font-size:4rem;"></i>
+                    <h4 class="mt-3 text-muted">No reviews yet</h4>
+                    <p class="text-muted">
+                        Complete a booking to leave your first review.
+                    </p>
+                    <a href="{% url 'my_bookings' %}"
+                       class="btn btn-primary">
+                        View My Bookings
+                    </a>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,4 +1,3 @@
- 
 {% extends 'base.html' %}
 {% block title %}Booking #{{ booking.id }} — ServiceBook{% endblock %}
 
@@ -21,19 +20,19 @@
                     </div>
                     <div>
                         {% if booking.status == 'pending' %}
-                            <span class="badge bg-warning text-dark fs-6">
-                                Pending
-                            </span>
+                        <span class="badge bg-warning text-dark fs-6">
+                            Pending
+                        </span>
                         {% elif booking.status == 'accepted' %}
-                            <span class="badge bg-success fs-6">Accepted</span>
+                        <span class="badge bg-success fs-6">Accepted</span>
                         {% elif booking.status == 'rejected' %}
-                            <span class="badge bg-danger fs-6">Rejected</span>
+                        <span class="badge bg-danger fs-6">Rejected</span>
                         {% elif booking.status == 'in_progress' %}
-                            <span class="badge bg-info fs-6">In Progress</span>
+                        <span class="badge bg-info fs-6">In Progress</span>
                         {% elif booking.status == 'completed' %}
-                            <span class="badge bg-primary fs-6">Completed</span>
+                        <span class="badge bg-primary fs-6">Completed</span>
                         {% elif booking.status == 'cancelled' %}
-                            <span class="badge bg-secondary fs-6">Cancelled</span>
+                        <span class="badge bg-secondary fs-6">Cancelled</span>
                         {% endif %}
                     </div>
                 </div>
@@ -77,96 +76,94 @@
                 </div>
 
                 {% if booking.notes %}
-                    <div class="alert alert-light">
-                        <strong>Special Instructions:</strong>
-                        {{ booking.notes }}
-                    </div>
+                <div class="alert alert-light">
+                    <strong>Special Instructions:</strong>
+                    {{ booking.notes }}
+                </div>
                 {% endif %}
 
                 {% if booking.rejection_reason %}
-                    <div class="alert alert-danger">
-                        <strong>Rejection Reason:</strong>
-                        {{ booking.rejection_reason }}
-                    </div>
+                <div class="alert alert-danger">
+                    <strong>Rejection Reason:</strong>
+                    {{ booking.rejection_reason }}
+                </div>
                 {% endif %}
 
                 <!-- Customer Actions -->
                 {% if is_customer %}
-                    <div class="d-flex gap-2 mt-3">
-                        {% if booking.can_be_cancelled_by_customer %}
-                            <a href="{% url 'cancel_booking' booking.pk %}"
-                               class="btn btn-danger">
-                                <i class="bi bi-x-circle"></i> Cancel Booking
-                            </a>
-                        {% endif %}
+                <div class="d-flex gap-2 mt-3">
+                    {% if booking.can_be_cancelled_by_customer %}
+                    <a href="{% url 'cancel_booking' booking.pk %}" class="btn btn-danger">
+                        <i class="bi bi-x-circle"></i> Cancel Booking
+                    </a>
+                    <a href="{% url 'submit_complaint_booking' booking.pk %}" class="btn btn-outline-danger">
+                        <i class="bi bi-exclamation-circle"></i>
+                        Submit Complaint
+                    </a>
+                    {% endif %}
 
-                        {% if booking.status == 'completed' and not has_review %}
-                            <a href="{% url 'add_review' booking.pk %}"
-                               class="btn btn-warning">
-                                <i class="bi bi-star"></i> Leave a Review
-                            </a>
-                        {% endif %}
+                    {% if booking.status == 'completed' and not has_review %}
+                    <a href="{% url 'add_review' booking.pk %}" class="btn btn-warning">
+                        <i class="bi bi-star"></i> Leave a Review
+                    </a>
+                    {% endif %}
 
-                        {% if booking.status == 'completed' and has_review %}
-                            <span class="badge bg-success fs-6 p-2">
-                                <i class="bi bi-check-circle"></i>
-                                Review Submitted
-                            </span>
-                        {% endif %}
-                    </div>
+                    {% if booking.status == 'completed' and has_review %}
+                    <span class="badge bg-success fs-6 p-2">
+                        <i class="bi bi-check-circle"></i>
+                        Review Submitted
+                    </span>
+                    {% endif %}
+                </div>
                 {% endif %}
 
                 <!-- Provider Actions -->
                 {% if is_provider %}
-                    <div class="d-flex gap-2 mt-3">
-                        {% if booking.can_be_accepted_by_provider %}
-                            <a href="{% url 'accept_booking' booking.pk %}"
-                               class="btn btn-success">
-                                <i class="bi bi-check-circle"></i> Accept
-                            </a>
-                            <a href="{% url 'reject_booking' booking.pk %}"
-                               class="btn btn-danger">
-                                <i class="bi bi-x-circle"></i> Reject
-                            </a>
-                        {% endif %}
+                <div class="d-flex gap-2 mt-3">
+                    {% if booking.can_be_accepted_by_provider %}
+                    <a href="{% url 'accept_booking' booking.pk %}" class="btn btn-success">
+                        <i class="bi bi-check-circle"></i> Accept
+                    </a>
+                    <a href="{% url 'reject_booking' booking.pk %}" class="btn btn-danger">
+                        <i class="bi bi-x-circle"></i> Reject
+                    </a>
+                    {% endif %}
 
-                        {% if booking.can_be_completed_by_provider %}
-                            <a href="{% url 'complete_booking' booking.pk %}"
-                               class="btn btn-primary">
-                                <i class="bi bi-check-all"></i> Mark Completed
-                            </a>
-                        {% endif %}
-                    </div>
+                    {% if booking.can_be_completed_by_provider %}
+                    <a href="{% url 'complete_booking' booking.pk %}" class="btn btn-primary">
+                        <i class="bi bi-check-all"></i> Mark Completed
+                    </a>
+                    {% endif %}
+                </div>
                 {% endif %}
 
             </div>
 
             <!-- Review Section -->
             {% if has_review %}
-                <div class="card p-4">
-                    <h5 class="fw-bold mb-3">
-                        <i class="bi bi-star-fill text-warning"></i>
-                        Customer Review
-                    </h5>
-                    <div class="d-flex mb-2">
-                        {% for i in "12345" %}
-                            {% if forloop.counter <= booking.review.rating %}
-                                <i class="bi bi-star-fill text-warning me-1"></i>
-                            {% else %}
-                                <i class="bi bi-star text-warning me-1"></i>
-                            {% endif %}
+            <div class="card p-4">
+                <h5 class="fw-bold mb-3">
+                    <i class="bi bi-star-fill text-warning"></i>
+                    Customer Review
+                </h5>
+                <div class="d-flex mb-2">
+                    {% for i in "12345" %}
+                    {% if forloop.counter <= booking.review.rating %} <i class="bi bi-star-fill text-warning me-1"></i>
+                        {% else %}
+                        <i class="bi bi-star text-warning me-1"></i>
+                        {% endif %}
                         {% endfor %}
                         <span class="ms-2 fw-bold">
                             {{ booking.review.rating }}/5
                         </span>
-                    </div>
-                    {% if booking.review.comment %}
-                        <p class="text-muted">{{ booking.review.comment }}</p>
-                    {% endif %}
-                    <small class="text-muted">
-                        {{ booking.review.created_at|date:"d M Y" }}
-                    </small>
                 </div>
+                {% if booking.review.comment %}
+                <p class="text-muted">{{ booking.review.comment }}</p>
+                {% endif %}
+                <small class="text-muted">
+                    {{ booking.review.created_at|date:"d M Y" }}
+                </small>
+            </div>
             {% endif %}
 
         </div>
@@ -174,44 +171,44 @@
         <!-- Provider/Customer Info Card -->
         <div class="col-md-4">
             {% if is_customer %}
-                <div class="card p-4">
-                    <h5 class="fw-bold mb-3">Provider Info</h5>
-                    <p class="mb-1">
-                        <strong>Name:</strong>
-                        {{ booking.service.provider.user.get_full_name|default:booking.service.provider.user.username }}
-                    </p>
-                    <p class="mb-1">
-                        <strong>Phone:</strong>
-                        {{ booking.service.provider.user.phone|default:'Not provided' }}
-                    </p>
-                    <p class="mb-1">
-                        <strong>City:</strong>
-                        {{ booking.service.provider.city }}
-                    </p>
-                    <p class="mb-1">
-                        <strong>Rating:</strong>
-                        <i class="bi bi-star-fill text-warning"></i>
-                        {{ booking.service.provider.average_rating }}
-                    </p>
-                </div>
+            <div class="card p-4">
+                <h5 class="fw-bold mb-3">Provider Info</h5>
+                <p class="mb-1">
+                    <strong>Name:</strong>
+                    {{ booking.service.provider.user.get_full_name|default:booking.service.provider.user.username }}
+                </p>
+                <p class="mb-1">
+                    <strong>Phone:</strong>
+                    {{ booking.service.provider.user.phone|default:'Not provided' }}
+                </p>
+                <p class="mb-1">
+                    <strong>City:</strong>
+                    {{ booking.service.provider.city }}
+                </p>
+                <p class="mb-1">
+                    <strong>Rating:</strong>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    {{ booking.service.provider.average_rating }}
+                </p>
+            </div>
             {% endif %}
 
             {% if is_provider %}
-                <div class="card p-4">
-                    <h5 class="fw-bold mb-3">Customer Info</h5>
-                    <p class="mb-1">
-                        <strong>Name:</strong>
-                        {{ booking.customer.get_full_name|default:booking.customer.username }}
-                    </p>
-                    <p class="mb-1">
-                        <strong>Phone:</strong>
-                        {{ booking.customer.phone|default:'Not provided' }}
-                    </p>
-                    <p class="mb-1">
-                        <strong>City:</strong>
-                        {{ booking.city }}
-                    </p>
-                </div>
+            <div class="card p-4">
+                <h5 class="fw-bold mb-3">Customer Info</h5>
+                <p class="mb-1">
+                    <strong>Name:</strong>
+                    {{ booking.customer.get_full_name|default:booking.customer.username }}
+                </p>
+                <p class="mb-1">
+                    <strong>Phone:</strong>
+                    {{ booking.customer.phone|default:'Not provided' }}
+                </p>
+                <p class="mb-1">
+                    <strong>City:</strong>
+                    {{ booking.city }}
+                </p>
+            </div>
             {% endif %}
         </div>
 
