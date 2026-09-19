@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -179,22 +179,92 @@ def provider_dashboard(request):
 
 @login_required(login_url='/accounts/login/')
 def admin_dashboard(request):
-    """Admin dashboard."""
+    """
+    Full admin dashboard with platform statistics.
+    """
 
     if not (request.user.is_admin_user() or request.user.is_staff):
         messages.error(request, 'Access denied.')
         return redirect('dashboard')
 
-    # Count statistics
-    total_customers = User.objects.filter(role=User.ROLE_CUSTOMER).count()
-    total_providers = User.objects.filter(role=User.ROLE_PROVIDER).count()
+    from bookings.models import Booking
+    from services.models import Service, ServiceCategory
+    from reviews.models import Review
+    from complaints.models import Complaint
+
+    # User Statistics
+    total_customers = User.objects.filter(
+        role=User.ROLE_CUSTOMER
+    ).count()
+    total_providers = User.objects.filter(
+        role=User.ROLE_PROVIDER
+    ).count()
+
+    # Booking Statistics
+    total_bookings = Booking.objects.count()
+    pending_bookings = Booking.objects.filter(
+        status=Booking.STATUS_PENDING
+    ).count()
+    completed_bookings = Booking.objects.filter(
+        status=Booking.STATUS_COMPLETED
+    ).count()
+    cancelled_bookings = Booking.objects.filter(
+        status=Booking.STATUS_CANCELLED
+    ).count()
+
+    # Service Statistics
+    total_services = Service.objects.count()
+    total_categories = ServiceCategory.objects.count()
+
+    # Review Statistics
+    total_reviews = Review.objects.count()
+
+    # Complaint Statistics
+    open_complaints = Complaint.objects.filter(
+        status=Complaint.STATUS_OPEN
+    ).count()
+    total_complaints = Complaint.objects.count()
+
+    # Recent Data
+    recent_bookings = Booking.objects.select_related(
+        'customer',
+        'service__provider__user'
+    ).order_by('-created_at')[:5]
+
+    recent_complaints = Complaint.objects.select_related(
+        'submitted_by'
+    ).order_by('-created_at')[:5]
+
+    recent_providers = ProviderProfile.objects.select_related(
+        'user'
+    ).order_by('-created_at')[:5]
 
     context = {
+        # User stats
         'total_customers': total_customers,
         'total_providers': total_providers,
+
+        # Booking stats
+        'total_bookings': total_bookings,
+        'pending_bookings': pending_bookings,
+        'completed_bookings': completed_bookings,
+        'cancelled_bookings': cancelled_bookings,
+
+        # Service stats
+        'total_services': total_services,
+        'total_categories': total_categories,
+
+        # Review and complaint stats
+        'total_reviews': total_reviews,
+        'open_complaints': open_complaints,
+        'total_complaints': total_complaints,
+
+        # Recent data
+        'recent_bookings': recent_bookings,
+        'recent_complaints': recent_complaints,
+        'recent_providers': recent_providers,
     }
     return render(request, 'accounts/admin_dashboard.html', context)
-
 
 @login_required(login_url='/accounts/login/')
 def update_profile(request):
@@ -223,3 +293,116 @@ def update_profile(request):
         form = form_class(instance=profile)
 
     return render(request, template, {'form': form})
+
+@login_required(login_url='/accounts/login/')
+def admin_users(request):
+    """Admin views all users."""
+
+    if not (request.user.is_admin_user() or request.user.is_staff):
+        messages.error(request, 'Access denied.')
+        return redirect('dashboard')
+
+    role_filter = request.GET.get('role', '')
+    users = User.objects.all().order_by('-date_joined')
+
+    if role_filter:
+        users = users.filter(role=role_filter)
+
+    context = {
+        'users': users,
+        'role_filter': role_filter,
+    }
+    return render(request, 'accounts/admin_users.html', context)
+
+
+@login_required(login_url='/accounts/login/')
+def admin_toggle_user(request, pk):
+    """Admin activates or deactivates a user."""
+
+    if not (request.user.is_admin_user() or request.user.is_staff):
+        messages.error(request, 'Access denied.')
+        return redirect('dashboard')
+
+    user = get_object_or_404(User, pk=pk)
+
+    if user == request.user:
+        messages.error(request, 'You cannot deactivate yourself.')
+        return redirect('admin_users')
+
+    user.is_active = not user.is_active
+    user.save()
+
+    status = 'activated' if user.is_active else 'deactivated'
+    messages.success(request, f'User {user.username} has been {status}.')
+    return redirect('admin_users')
+
+
+@login_required(login_url='/accounts/login/')
+def admin_verify_provider(request, pk):
+    """Admin verifies a service provider."""
+
+    if not (request.user.is_admin_user() or request.user.is_staff):
+        messages.error(request, 'Access denied.')
+        return redirect('dashboard')
+
+    provider = get_object_or_404(ProviderProfile, pk=pk)
+    provider.is_verified = not provider.is_verified
+    provider.save()
+
+    status = 'verified' if provider.is_verified else 'unverified'
+    messages.success(
+        request,
+        f'Provider {provider.user.username} has been {status}.'
+    )
+    return redirect('admin_users')
+
+
+@login_required(login_url='/accounts/login/')
+def admin_all_bookings(request):
+    """Admin views all bookings."""
+
+    if not (request.user.is_admin_user() or request.user.is_staff):
+        messages.error(request, 'Access denied.')
+        return redirect('dashboard')
+
+    from bookings.models import Booking
+
+    status_filter = request.GET.get('status', '')
+    bookings = Booking.objects.select_related(
+        'customer',
+        'service__provider__user',
+        'service__category'
+    ).order_by('-created_at')
+
+    if status_filter:
+        bookings = bookings.filter(status=status_filter)
+
+    context = {
+        'bookings': bookings,
+        'status_filter': status_filter,
+    }
+    return render(request, 'accounts/admin_bookings.html', context)
+
+
+@login_required(login_url='/accounts/login/')
+def admin_all_services(request):
+    """Admin views all services."""
+
+    if not (request.user.is_admin_user() or request.user.is_staff):
+        messages.error(request, 'Access denied.')
+        return redirect('dashboard')
+
+    from services.models import Service, ServiceCategory
+
+    services = Service.objects.select_related(
+        'provider__user',
+        'category'
+    ).order_by('-created_at')
+
+    categories = ServiceCategory.objects.all()
+
+    context = {
+        'services': services,
+        'categories': categories,
+    }
+    return render(request, 'accounts/admin_services.html', context)

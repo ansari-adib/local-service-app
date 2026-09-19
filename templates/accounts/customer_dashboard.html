@@ -22,8 +22,13 @@
                     <a class="nav-link" href="{% url 'my_complaints' %}">
                         <i class="bi bi-exclamation-circle"></i> Complaints
                     </a>
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="{% url 'notification_list' %}">
                         <i class="bi bi-bell"></i> Notifications
+                        {% if unread_notifications > 0 %}
+                        <span class="badge bg-danger ms-1">
+                            {{ unread_notifications }}
+                        </span>
+                        {% endif %}
                     </a>
                     <a class="nav-link" href="{% url 'update_profile' %}">
                         <i class="bi bi-person"></i> Profile

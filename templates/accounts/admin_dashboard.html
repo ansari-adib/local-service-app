@@ -11,20 +11,22 @@
                 <a class="nav-link active" href="{% url 'admin_dashboard' %}">
                     <i class="bi bi-grid"></i> Dashboard
                 </a>
-                <a class="nav-link" href="#">
-                    <i class="bi bi-people"></i> Customers
+                <a class="nav-link" href="{% url 'admin_users' %}">
+                    <i class="bi bi-people"></i> Users
                 </a>
-                <a class="nav-link" href="#">
-                    <i class="bi bi-briefcase"></i> Providers
-                </a>
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="{% url 'admin_all_services' %}">
                     <i class="bi bi-tools"></i> Services
                 </a>
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="{% url 'admin_all_bookings' %}">
                     <i class="bi bi-calendar-check"></i> Bookings
                 </a>
                 <a class="nav-link" href="{% url 'admin_complaints' %}">
                     <i class="bi bi-exclamation-circle"></i> Complaints
+                    {% if open_complaints > 0 %}
+                        <span class="badge bg-danger ms-1">
+                            {{ open_complaints }}
+                        </span>
+                    {% endif %}
                 </a>
                 <a class="nav-link" href="/admin/">
                     <i class="bi bi-gear"></i> Django Admin
@@ -38,41 +40,284 @@
 
         <!-- Main Content -->
         <div class="col-md-10 main-content">
-            <h4 class="fw-bold mb-1">Admin Dashboard</h4>
-            <p class="text-muted mb-4">Platform overview and management.</p>
 
-            <!-- Stat Cards -->
+            <h4 class="fw-bold mb-1">Admin Dashboard</h4>
+            <p class="text-muted mb-4">
+                Platform overview — ServiceBook
+            </p>
+
+            <!-- Row 1 Stats — Users -->
             <div class="row g-4 mb-4">
                 <div class="col-md-3">
-                    <div class="stat-card" style="background: linear-gradient(135deg, #0d6efd, #0056b3);">
+                    <div class="stat-card"
+                         style="background: linear-gradient(135deg, #0d6efd, #0056b3);">
                         <i class="bi bi-people" style="font-size:2rem;"></i>
                         <h3>{{ total_customers }}</h3>
                         <p class="mb-0">Total Customers</p>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="stat-card" style="background: linear-gradient(135deg, #198754, #146c43);">
+                    <div class="stat-card"
+                         style="background: linear-gradient(135deg, #198754, #146c43);">
                         <i class="bi bi-briefcase" style="font-size:2rem;"></i>
                         <h3>{{ total_providers }}</h3>
                         <p class="mb-0">Total Providers</p>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="stat-card" style="background: linear-gradient(135deg, #ffc107, #d39e00);">
+                    <div class="stat-card"
+                         style="background: linear-gradient(135deg, #6f42c1, #59359a);">
+                        <i class="bi bi-tools" style="font-size:2rem;"></i>
+                        <h3>{{ total_services }}</h3>
+                        <p class="mb-0">Total Services</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card"
+                         style="background: linear-gradient(135deg, #fd7e14, #dc6502);">
+                        <i class="bi bi-grid" style="font-size:2rem;"></i>
+                        <h3>{{ total_categories }}</h3>
+                        <p class="mb-0">Categories</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 2 Stats — Bookings -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="stat-card"
+                         style="background: linear-gradient(135deg, #0dcaf0, #0aa2c0);">
                         <i class="bi bi-calendar-check" style="font-size:2rem;"></i>
-                        <h3>0</h3>
+                        <h3>{{ total_bookings }}</h3>
                         <p class="mb-0">Total Bookings</p>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="stat-card" style="background: linear-gradient(135deg, #dc3545, #b02a37);">
+                    <div class="stat-card"
+                         style="background: linear-gradient(135deg, #ffc107, #d39e00);">
+                        <i class="bi bi-clock" style="font-size:2rem;"></i>
+                        <h3>{{ pending_bookings }}</h3>
+                        <p class="mb-0">Pending</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card"
+                         style="background: linear-gradient(135deg, #198754, #146c43);">
+                        <i class="bi bi-check-circle" style="font-size:2rem;"></i>
+                        <h3>{{ completed_bookings }}</h3>
+                        <p class="mb-0">Completed</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card"
+                         style="background: linear-gradient(135deg, #dc3545, #b02a37);">
                         <i class="bi bi-exclamation-circle" style="font-size:2rem;"></i>
-                        <h3>0</h3>
+                        <h3>{{ open_complaints }}</h3>
                         <p class="mb-0">Open Complaints</p>
                     </div>
                 </div>
             </div>
 
+            <!-- Recent Data Row -->
+            <div class="row g-4">
+
+                <!-- Recent Bookings -->
+                <div class="col-md-6">
+                    <div class="card p-4">
+                        <div class="d-flex justify-content-between mb-3">
+                            <h5 class="fw-bold mb-0">Recent Bookings</h5>
+                            <a href="{% url 'admin_all_bookings' %}"
+                               class="btn btn-outline-primary btn-sm">
+                                View All
+                            </a>
+                        </div>
+                        {% if recent_bookings %}
+                            <div class="table-responsive">
+                                <table class="table table-sm mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Customer</th>
+                                            <th>Service</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for booking in recent_bookings %}
+                                            <tr>
+                                                <td>{{ booking.id }}</td>
+                                                <td>
+                                                    {{ booking.customer.username }}
+                                                </td>
+                                                <td>
+                                                    {{ booking.service.name|truncatewords:3 }}
+                                                </td>
+                                                <td>
+                                                    {% if booking.status == 'pending' %}
+                                                        <span class="badge bg-warning text-dark">
+                                                            Pending
+                                                        </span>
+                                                    {% elif booking.status == 'completed' %}
+                                                        <span class="badge bg-success">
+                                                            Completed
+                                                        </span>
+                                                    {% elif booking.status == 'accepted' %}
+                                                        <span class="badge bg-primary">
+                                                            Accepted
+                                                        </span>
+                                                    {% else %}
+                                                        <span class="badge bg-secondary">
+                                                            {{ booking.get_status_display }}
+                                                        </span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <p class="text-muted text-center py-3">
+                                No bookings yet.
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Recent Complaints -->
+                <div class="col-md-6">
+                    <div class="card p-4">
+                        <div class="d-flex justify-content-between mb-3">
+                            <h5 class="fw-bold mb-0">Recent Complaints</h5>
+                            <a href="{% url 'admin_complaints' %}"
+                               class="btn btn-outline-danger btn-sm">
+                                View All
+                            </a>
+                        </div>
+                        {% if recent_complaints %}
+                            <div class="table-responsive">
+                                <table class="table table-sm mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>User</th>
+                                            <th>Subject</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for complaint in recent_complaints %}
+                                            <tr>
+                                                <td>{{ complaint.id }}</td>
+                                                <td>
+                                                    {{ complaint.submitted_by.username }}
+                                                </td>
+                                                <td>
+                                                    {{ complaint.subject|truncatewords:4 }}
+                                                </td>
+                                                <td>
+                                                    {% if complaint.status == 'open' %}
+                                                        <span class="badge bg-danger">
+                                                            Open
+                                                        </span>
+                                                    {% elif complaint.status == 'resolved' %}
+                                                        <span class="badge bg-success">
+                                                            Resolved
+                                                        </span>
+                                                    {% else %}
+                                                        <span class="badge bg-warning text-dark">
+                                                            {{ complaint.get_status_display }}
+                                                        </span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <p class="text-muted text-center py-3">
+                                No complaints yet.
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Recent Providers -->
+                <div class="col-md-12">
+                    <div class="card p-4">
+                        <div class="d-flex justify-content-between mb-3">
+                            <h5 class="fw-bold mb-0">
+                                Recently Registered Providers
+                            </h5>
+                            <a href="{% url 'admin_users' %}?role=provider"
+                               class="btn btn-outline-success btn-sm">
+                                View All
+                            </a>
+                        </div>
+                        {% if recent_providers %}
+                            <div class="table-responsive">
+                                <table class="table table-sm mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Username</th>
+                                            <th>Name</th>
+                                            <th>City</th>
+                                            <th>Experience</th>
+                                            <th>Verified</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for provider in recent_providers %}
+                                            <tr>
+                                                <td>
+                                                    {{ provider.user.username }}
+                                                </td>
+                                                <td>
+                                                    {{ provider.user.get_full_name|default:'—' }}
+                                                </td>
+                                                <td>
+                                                    {{ provider.city|default:'—' }}
+                                                </td>
+                                                <td>
+                                                    {{ provider.experience_years }} yr(s)
+                                                </td>
+                                                <td>
+                                                    {% if provider.is_verified %}
+                                                        <span class="badge bg-success">
+                                                            Verified
+                                                        </span>
+                                                    {% else %}
+                                                        <span class="badge bg-warning text-dark">
+                                                            Pending
+                                                        </span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <a href="{% url 'admin_verify_provider' provider.pk %}"
+                                                       class="btn btn-outline-success btn-sm">
+                                                        {% if provider.is_verified %}
+                                                            Unverify
+                                                        {% else %}
+                                                            Verify
+                                                        {% endif %}
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <p class="text-muted text-center py-3">
+                                No providers yet.
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 </div>

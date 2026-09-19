@@ -125,11 +125,26 @@
                 </ul>
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
+
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'dashboard' %}">
                             <i class="bi bi-grid"></i> Dashboard
                         </a>
                     </li>
+
+                    <!-- Notification Bell -->
+                    <li class="nav-item">
+                        <a class="nav-link position-relative" href="{% url 'notification_list' %}">
+                            <i class="bi bi-bell"></i>
+                            {% if unread_notifications > 0 %}
+                            <span class="position-absolute top-0 start-100
+                          translate-middle badge rounded-pill bg-danger" style="font-size:0.6rem;">
+                                {{ unread_notifications }}
+                            </span>
+                            {% endif %}
+                        </a>
+                    </li>
+
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
                             <i class="bi bi-person-circle"></i>
@@ -156,6 +171,7 @@
                             </li>
                         </ul>
                     </li>
+
                     {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'login' %}">Login</a>

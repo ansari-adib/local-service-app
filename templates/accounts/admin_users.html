@@ -1,0 +1,153 @@
+ 
+{% extends 'base.html' %}
+{% block title %}Manage Users — ServiceBook{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar">
+            <nav class="nav flex-column">
+                <a class="nav-link" href="{% url 'admin_dashboard' %}">
+                    <i class="bi bi-grid"></i> Dashboard
+                </a>
+                <a class="nav-link active" href="{% url 'admin_users' %}">
+                    <i class="bi bi-people"></i> Users
+                </a>
+                <a class="nav-link" href="{% url 'admin_all_services' %}">
+                    <i class="bi bi-tools"></i> Services
+                </a>
+                <a class="nav-link" href="{% url 'admin_all_bookings' %}">
+                    <i class="bi bi-calendar-check"></i> Bookings
+                </a>
+                <a class="nav-link" href="{% url 'admin_complaints' %}">
+                    <i class="bi bi-exclamation-circle"></i> Complaints
+                </a>
+                <a class="nav-link" href="/admin/">
+                    <i class="bi bi-gear"></i> Django Admin
+                </a>
+                <hr>
+                <a class="nav-link text-danger" href="{% url 'logout' %}">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-10 main-content">
+
+            <h4 class="fw-bold mb-4">Manage Users</h4>
+
+            <!-- Filter Tabs -->
+            <div class="mb-4">
+                <a href="{% url 'admin_users' %}"
+                   class="btn btn-sm me-2
+                   {% if not role_filter %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                    All Users
+                </a>
+                <a href="?role=customer"
+                   class="btn btn-sm me-2
+                   {% if role_filter == 'customer' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                    Customers
+                </a>
+                <a href="?role=provider"
+                   class="btn btn-sm me-2
+                   {% if role_filter == 'provider' %}btn-success{% else %}btn-outline-success{% endif %}">
+                    Providers
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Username</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Phone</th>
+                                <th>Status</th>
+                                <th>Joined</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for u in users %}
+                                <tr>
+                                    <td>{{ u.id }}</td>
+                                    <td>
+                                        <strong>{{ u.username }}</strong>
+                                    </td>
+                                    <td>
+                                        {{ u.get_full_name|default:'—' }}
+                                    </td>
+                                    <td>{{ u.email }}</td>
+                                    <td>
+                                        {% if u.role == 'customer' %}
+                                            <span class="badge bg-primary">
+                                                Customer
+                                            </span>
+                                        {% elif u.role == 'provider' %}
+                                            <span class="badge bg-success">
+                                                Provider
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-dark">
+                                                Admin
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ u.phone|default:'—' }}</td>
+                                    <td>
+                                        {% if u.is_active %}
+                                            <span class="badge bg-success">
+                                                Active
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-danger">
+                                                Inactive
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {{ u.date_joined|date:"d M Y" }}
+                                    </td>
+                                    <td>
+                                        <div class="d-flex gap-1">
+                                            <a href="{% url 'admin_toggle_user' u.pk %}"
+                                               class="btn btn-sm
+                                               {% if u.is_active %}btn-outline-danger{% else %}btn-outline-success{% endif %}">
+                                                {% if u.is_active %}
+                                                    Deactivate
+                                                {% else %}
+                                                    Activate
+                                                {% endif %}
+                                            </a>
+                                            {% if u.role == 'provider' %}
+                                                {% if u.provider_profile %}
+                                                    <a href="{% url 'admin_verify_provider' u.provider_profile.pk %}"
+                                                       class="btn btn-sm btn-outline-success">
+                                                        {% if u.provider_profile.is_verified %}
+                                                            Unverify
+                                                        {% else %}
+                                                            Verify
+                                                        {% endif %}
+                                                    </a>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
